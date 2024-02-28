@@ -1,0 +1,20 @@
+* Installing the linelidar class module
+
+  - Linux
+
+    python3 -m pip install ./linelidarclass
+
+  - Windows
+
+    python -m pip install .\linelidarclass
+
+
+* Uninstalling the linelidar class module
+
+  - Linux
+
+    python3 -m pip uninstall linelidarclass
+
+  - Windows
+
+    python -m pip uninstall linelidarclass
