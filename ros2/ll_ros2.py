@@ -8,11 +8,12 @@ import threading
 import numpy as np
 import math
 import struct
+import traceback
 
 import rclpy
 from rclpy.node import Node
 from sensor_msgs.msg import PointCloud2, LaserScan, PointField, PointCloud
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point, TransformStamped
 
 sys.path.append(".")
 sys.path.append("..")
@@ -27,8 +28,9 @@ class LineLidar_node(Node):
 		rclpy.logging.get_logger(f'{script}').info("Starting")
 
 		# Start LineLidar thread
-		self.t           = threading.Thread(target = self.linelidar_comm_thread, args = (addr, freq))
-		self.targets     = []
+		self.t               = threading.Thread(target = self.linelidar_comm_thread, args = (addr, freq))
+		self.targets         = []
+		self.trigger_counter = 0
 		self.t.start()
 
 		# Publisher definition for PointCloud
@@ -36,6 +38,14 @@ class LineLidar_node(Node):
 		self.cloud_msg      = PointCloud2()
 		self.cloud_pub      = self.create_publisher(PointCloud2, 'cloud', 10)
 		self.cloud_timer    = self.create_timer(self.cloud_rate, self.cloud_out)
+		
+		
+	# Rotation matrix to rotate the pointcloud according to quadrature encoder steps
+	def R(self, phi):
+		r = [[np.cos(phi), 0, np.sin(phi)],
+		     [0, 1, 0],
+		     [-np.sin(phi), 0, np.cos(phi)]]
+		return r
 
 
 	# Callback for publishing pointcloud
@@ -43,13 +53,23 @@ class LineLidar_node(Node):
 		try:
 			point_struct = struct.Struct("<ffff")
 			points = []
+			rotated_point = []
 
 			for target in self.targets:
 				ra     = np.radians( target[1])
 				dist_x = np.cos(ra) * target[0]
 				dist_y = np.sin(ra) * target[0]
 				points.append(Point(x=dist_x, y=dist_y, z=0.0))
-
+	
+			# Step division on encoder is 300
+			# Without encoder trigger_counter is 0 resulting in no rotation
+			r = self.R(self.trigger_counter/-300)
+			
+			for point in points:
+				rotated = (np.dot([point.x, point.y, point.z], r))
+				rotated_point.append(Point(x=rotated[0], y=rotated[1], z=-rotated[2]))
+				
+			points = rotated_point
 			size = 4
 			ros_dtype = PointField.FLOAT32
 			fields = [PointField(name=n, offset=i*size, datatype=ros_dtype, count=1)for i, n in enumerate('xyzi')]
@@ -73,6 +93,7 @@ class LineLidar_node(Node):
 
 		except Exception as e:
 			print("@cloud_out:", e)
+			print(traceback.format_exc())
 
 
 	# LineLidar communication based on the example "multithreaded.py"
@@ -142,10 +163,11 @@ class LineLidar_node(Node):
 					# Add the notification's target to this measurement's targets
 					targets.extend(notif.targets)
 					self.targets = targets
+					self.trigger_counter = notif.triggercounter
 
 					# Save the notification's measurement ID
 					last_measurementid  = notif.measurementid
-
+					
 				# Stop sampling
 				ll.stop_sampling()
 
