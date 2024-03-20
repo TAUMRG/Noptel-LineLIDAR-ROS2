@@ -3,7 +3,9 @@ ROS2 gateway for Noptel LineLIDAR
 
 Publishes pointclouds from the lidar to /cloud topic of type PointCLoud2
 ## Usage
-Note: you need LineLidar python library from Noptel for this to work
+First change lidar's IP address on the script:
+https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2/blob/ed873cc7f2184dfe654da8025532eb1de0a3c7e4/ros2/ll_ros2.py#L160
+Then run the following in terminal:
 ```
 cd ros2
 python3 ll_ros2.py
