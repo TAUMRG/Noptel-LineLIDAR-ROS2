@@ -28,3 +28,7 @@ rviz2
 * Launch file with parameters
 * Services for changing lidar settings
 * Diagnostics topic
+
+## Issues
+
+* IndexError in cloud_out() function. Does not crash the node, ignored for now.
