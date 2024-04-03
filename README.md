@@ -1,14 +1,33 @@
 # Noptel-LineLIDAR-ROS2
-ROS2 gateway for Noptel LineLIDAR
+- ROS2 gateway for Noptel LineLIDAR
+- Tested to work on ROS2 Humble
+- Publishes pointclouds from the lidar to /cloud topic of type PointCLoud2
 
-Publishes pointclouds from the lidar to /cloud topic of type PointCLoud2
-## Usage
-First change lidar's IP address on the script:
-https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2/blob/ed873cc7f2184dfe654da8025532eb1de0a3c7e4/ros2/ll_ros2.py#L160
-Then run the following in terminal:
+## Install
+Clone into a Ros2 workspace:
+
 ```
-cd ros2
-python3 ll_ros2.py
+mkdir -p ~/ros2_ws/src
+cd ~/ros2_ws/src
+git clone -b humble https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2.git
+cd ..
+```
+Change launch file parameters:
+
+https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2/blob/dfde9d6338313fafee00204c6aabfbcca219fd5f/launch/ll.launch.py#L15-L19
+
+
+Build with colcon and source:
+```
+colcon build --symlink-install
+source install/setup.bash
+```
+
+## Usage
+
+Launch the LineLidar node:
+```
+ros2 launch Noptel_LineLIDAR_ROS2 ll.launch.py
 ```
 
 Transformation can be changed with tf:
@@ -24,11 +43,9 @@ rviz2
 
 ## ToDo
 
-* Create a ros2 package
-* Launch file with parameters
 * Services for changing lidar settings
 * Diagnostics topic
 
 ## Issues
 
-* None for now
+* Setuptools depricated

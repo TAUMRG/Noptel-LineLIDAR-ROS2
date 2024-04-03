@@ -15,8 +15,8 @@ from rclpy.node import Node
 from sensor_msgs.msg import PointCloud2, LaserScan, PointField, PointCloud
 from geometry_msgs.msg import Point, TransformStamped
 
-sys.path.append(".")
-sys.path.append("..")
+#sys.path.append(".")
+#sys.path.append("..")
 
 from linelidarclass.linelidar import LineLidar, LLchr
 
@@ -24,21 +24,37 @@ class LineLidar_node(Node):
 	def __init__(self, addr, freq):
 		super().__init__("LineLidar")
 
-		script = os.path.basename(__file__)
-		rclpy.logging.get_logger(f'{script}').info("Starting")
+		self.script = os.path.basename(__file__)
+		rclpy.logging.get_logger(f'{self.script}').info("Starting")
+				
+		# Parameter declarations----------------------------------------------------
 		
-		self.encoder_steps = 1200 - 1
+		# IP address
+		self.declare_parameter('addr', '192.168.10.98' )
+		self.addr = self.get_parameter('addr').get_parameter_value().string_value
+		
+		# Sampling rate
+		self.declare_parameter('freq', 50 )
+		self.freq = self.get_parameter('freq').get_parameter_value().integer_value
+		
+		# Threshold
+		self.declare_parameter('threshold', 3000 )
+		self.threshold = self.get_parameter('threshold').get_parameter_value().integer_value
+	
+		# Encoder resolution
+		self.declare_parameter('encoder_step_count', 1200-1 )
+		self.encoder_steps = self.get_parameter('encoder_step_count').get_parameter_value().integer_value
 		self.encoder_scale = -(2 * math.pi)/(self.encoder_steps)
-		self.threshold = 5000
+
 
 		# Start LineLidar thread
-		self.t               = threading.Thread(target = self.linelidar_comm_thread, args = (addr, freq))
+		self.t               = threading.Thread(target = self.linelidar_comm_thread, args = (self.addr, self.freq))
 		self.targets         = []
 		self.trigger_counter = 0
 		self.t.start()
 
 		# Publisher definition for PointCloud
-		self.cloud_rate     = 1/freq # seconds
+		self.cloud_rate     = 1/(self.freq + 1) # seconds
 		self.cloud_msg      = PointCloud2()
 		self.cloud_pub      = self.create_publisher(PointCloud2, 'cloud', 10)
 		self.cloud_timer    = self.create_timer(self.cloud_rate, self.cloud_out)
@@ -103,6 +119,8 @@ class LineLidar_node(Node):
 
 	# LineLidar communication based on the example "multithreaded.py"
 	def linelidar_comm_thread(self, address, frequency):
+		rclpy.logging.get_logger(f'{self.script}').info(f"Address: {address}")
+		rclpy.logging.get_logger(f'{self.script}').info(f"Frequency: {frequency}hz")
 		try:
 			with LineLidar(addr = address) as ll:
 
