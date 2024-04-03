@@ -54,12 +54,14 @@ class LineLidar_node(Node):
 			point_struct = struct.Struct("<ffff")
 			points = []
 			rotated_point = []
+			intensity = []
 
 			for target in self.targets:
 				ra     = np.radians( target[1])
 				dist_x = np.cos(ra) * target[0]
 				dist_y = np.sin(ra) * target[0]
 				points.append(Point(x=dist_x, y=dist_y, z=0.0))
+				intensity.append(target[2])
 	
 			# Step division on encoder is 300
 			# Without encoder trigger_counter is 0 resulting in no rotation
@@ -76,7 +78,7 @@ class LineLidar_node(Node):
 
 			buffer = bytearray(point_struct.size * len(points))
 			for i, point in enumerate(points):
-				point_struct.pack_into(buffer, i * point_struct.size, point.x, point.y, point.z, self.targets[i][2])
+				point_struct.pack_into(buffer, i * point_struct.size, point.x, point.y, point.z, intensity[i])
 
 			self.cloud_msg.header.stamp     = self.get_clock().now().to_msg()
 			self.cloud_msg.header.frame_id  = "LineLidar"
