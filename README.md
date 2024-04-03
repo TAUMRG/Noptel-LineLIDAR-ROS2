@@ -1,7 +1,8 @@
 # Noptel-LineLIDAR-ROS2
-ROS2 gateway for Noptel LineLIDAR
+- ROS2 gateway for Noptel LineLIDAR
+- Tested to work on ROS2 Humble
+- Publishes pointclouds from the lidar to /cloud topic of type PointCLoud2
 
-Publishes pointclouds from the lidar to /cloud topic of type PointCLoud2
 ## Install
 Clone into a Ros2 workspace:
 
