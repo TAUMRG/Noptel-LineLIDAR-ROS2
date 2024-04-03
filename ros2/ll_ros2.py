@@ -26,6 +26,9 @@ class LineLidar_node(Node):
 
 		script = os.path.basename(__file__)
 		rclpy.logging.get_logger(f'{script}').info("Starting")
+		
+		self.encoder_steps = 1200
+		self.encoder_scale = -(2 * math.pi)/(self.encoder_steps)
 
 		# Start LineLidar thread
 		self.t               = threading.Thread(target = self.linelidar_comm_thread, args = (addr, freq))
@@ -63,9 +66,8 @@ class LineLidar_node(Node):
 				points.append(Point(x=dist_x, y=dist_y, z=0.0))
 				intensity.append(target[2])
 	
-			# Step division on encoder is 300
 			# Without encoder trigger_counter is 0 resulting in no rotation
-			r = self.R(self.trigger_counter/-300)
+			r = self.R(self.trigger_counter * self.encoder_scale)
 			
 			for point in points:
 				rotated = (np.dot([point.x, point.y, point.z], r))
