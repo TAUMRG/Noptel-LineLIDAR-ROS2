@@ -15,6 +15,8 @@ def generate_launch_description():
          parameters=[
          	{'addr': '192.168.10.98'},
          	{'freq': 20},
+         	{'encoder_step_count': 1199},
+         	{'threshold': 3000},
          ]
       ),
    ])
