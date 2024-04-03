@@ -11,8 +11,9 @@ cd ~/ros2_ws/src
 git clone -b humble https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2.git
 cd ..
 ```
-Change lidar's IP address on the launch file:
-https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2/blob/3fd6df3fe0bae0c95dfdec6eacd832e89e7d221a/launch/ll.launch.py#L16
+Change launch file parameters:
+
+https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2/blob/dfde9d6338313fafee00204c6aabfbcca219fd5f/launch/ll.launch.py#L15-L19
 
 
 Build with colcon and source:
