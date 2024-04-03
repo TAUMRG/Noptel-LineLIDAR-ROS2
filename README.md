@@ -20,7 +20,7 @@ Pointcloud can be visualised with Rviz:
 ```
 rviz2
 ```
-![alt text](pictures/Rviz.jpeg "Logo Title")
+![sweep1](pictures/sweep1.png)
 
 ## ToDo
 
