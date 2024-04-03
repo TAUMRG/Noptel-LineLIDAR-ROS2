@@ -31,4 +31,4 @@ rviz2
 
 ## Issues
 
-* IndexError in cloud_out() function. Does not crash the node, ignored for now.
+* None for now
