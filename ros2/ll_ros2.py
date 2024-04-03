@@ -27,8 +27,9 @@ class LineLidar_node(Node):
 		script = os.path.basename(__file__)
 		rclpy.logging.get_logger(f'{script}').info("Starting")
 		
-		self.encoder_steps = 1200
+		self.encoder_steps = 1200 - 1
 		self.encoder_scale = -(2 * math.pi)/(self.encoder_steps)
+		self.threshold = 15000
 
 		# Start LineLidar thread
 		self.t               = threading.Thread(target = self.linelidar_comm_thread, args = (addr, freq))
@@ -113,6 +114,7 @@ class LineLidar_node(Node):
 				ll.enable_notification(LLchr.RANGE)
 				ll.set_sampling_rate(frequency)
 				ll.write_chr(LLchr.NB_PEAKS, peaks = 3) 
+				ll.write_chr(LLchr.AMPLITUDE_THRESHOLD, threshold = self.threshold)
 
 				# Get calibration data
 				calibrated_angles = ll.read_chr(LLchr.CALIBRATED_ANGLES).angles
@@ -183,7 +185,7 @@ class LineLidar_node(Node):
 def main(args=None):
 	try:
 		rclpy.init()
-		node = LineLidar_node("192.168.10.98", 15)
+		node = LineLidar_node("192.168.10.98", 20)
 		rclpy.spin(node)
 
 	except KeyboardInterrupt:
