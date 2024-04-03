@@ -9,7 +9,7 @@ Clone into a Ros2 workspace:
 ```
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
-git clone -b humble https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2.git
+git clone https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2.git
 cd ..
 ```
 Change launch file parameters:
