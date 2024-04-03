@@ -29,7 +29,7 @@ class LineLidar_node(Node):
 		
 		self.encoder_steps = 1200 - 1
 		self.encoder_scale = -(2 * math.pi)/(self.encoder_steps)
-		self.threshold = 15000
+		self.threshold = 5000
 
 		# Start LineLidar thread
 		self.t               = threading.Thread(target = self.linelidar_comm_thread, args = (addr, freq))
@@ -77,7 +77,7 @@ class LineLidar_node(Node):
 			points = rotated_point
 			size = 4
 			ros_dtype = PointField.FLOAT32
-			fields = [PointField(name=n, offset=i*size, datatype=ros_dtype, count=1)for i, n in enumerate('xyzi')]
+			fields = [PointField(name=n, offset=i*size, datatype=ros_dtype, count=1)for i, n in enumerate(['x', 'y', 'z', 'intensity'])]
 
 			buffer = bytearray(point_struct.size * len(points))
 			for i, point in enumerate(points):
@@ -91,7 +91,7 @@ class LineLidar_node(Node):
 			self.cloud_msg.point_step       = point_struct.size
 			self.cloud_msg.height           = 1
 			self.cloud_msg.width            = len(points)
-			self.cloud_msg.is_dense         = False
+			self.cloud_msg.is_dense         = True
 			self.cloud_msg.is_bigendian     = False
 
 			self.cloud_pub.publish(self.cloud_msg)
