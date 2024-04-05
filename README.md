@@ -49,9 +49,10 @@ To save pointcloud in .ply format:
 ros2 run Noptel_LineLIDAR_ROS2 record_ply
 ```
 While active recorc_ply collects pointclouds and saves them to a .ply file when terminated with a keyboard interrupt ^c.
-Two files are saved into saved_clouds folder with unix timestamp.
+Two files are saved into saved_clouds folder with unix timestamp. https://point.love/ can be used to view .ply files.
 - cloud_intensity : intensity based coloring
 - cloud_gradient  : distance based coloring
+
 
 ## ToDo
 
