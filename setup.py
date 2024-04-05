@@ -22,7 +22,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'll_ros2 = Noptel_LineLIDAR_ROS2.ll_ros2:main'
+            'll_ros2 = Noptel_LineLIDAR_ROS2.ll_ros2:main',
+            'record_ply = Noptel_LineLIDAR_ROS2.record_ply:main'
         ],
     },
 )
