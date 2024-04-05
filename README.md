@@ -9,7 +9,7 @@ Clone into a Ros2 workspace:
 ```
 mkdir -p ~/ros2_ws/src
 cd ~/ros2_ws/src
-git clone -b humble https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2.git
+git clone https://github.com/TAUMRG/Noptel-LineLIDAR-ROS2.git
 cd ..
 ```
 Change launch file parameters:
@@ -22,6 +22,7 @@ Build with colcon and source:
 colcon build --symlink-install
 source install/setup.bash
 ```
+If you get setuptools deprication warning, downgrade it to version 58. (See Issues bellow for more info)
 
 ## Usage
 
@@ -48,4 +49,11 @@ rviz2
 
 ## Issues
 
-* Setuptools depricated
+* The way ROS2 uses Setuptools is being depricated, no updates yet, this causes error in build process. Workaround is to downgrade setuptools to version 58 or suppress warnings with environment variable:
+  
+```
+python3 -m pip install setuptools==58.2.0
+```
+```
+PYTHONWARNINGS="ignore:setup.py install is deprecated::setuptools.command.install"; export PYTHONWARNINGS
+```
